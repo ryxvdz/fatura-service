@@ -1,6 +1,7 @@
 package com.ryan.fatura_service.model;
 
 import com.ryan.fatura_service.enums.StatusDePagamento;
+import com.ryan.fatura_service.enums.TipoTransacao;
 import lombok.Getter;
 import lombok.Setter;
 
