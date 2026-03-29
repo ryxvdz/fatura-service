@@ -2,14 +2,16 @@ package com.ryan.fatura_service.model;
 
 import com.ryan.fatura_service.enums.StatusDePagamento;
 import com.ryan.fatura_service.enums.TipoTransacao;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@ToString
+
 public class Transacao {
 
     private String id;
