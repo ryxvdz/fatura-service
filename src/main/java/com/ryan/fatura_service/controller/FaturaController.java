@@ -35,20 +35,14 @@ public class FaturaController {
     @GetMapping("/conta/{contaId}/pdf")
     public ResponseEntity<byte[]> baixarPdf(
             @PathVariable String contaId,
-            @RequestParam TipoTransacao tipo) { // Ex: /api/faturas/conta/123/pdf?tipo=CREDITO
-        try {
-            byte[] pdfBytes = pdfService.gerarDocumentoPdf(contaId, tipo);
+            @RequestParam TipoTransacao tipo) {
+        byte[] pdfBytes = pdfService.gerarDocumentoPdf(contaId, tipo);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"documento-" + contaId + ".pdf\"");
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_PDF);
-            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"documento-" + contaId + ".pdf\"");
-
-            return ResponseEntity.ok()
-                    .headers(headers)
-                    .body(pdfBytes);
-
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(pdfBytes);
     }
 }

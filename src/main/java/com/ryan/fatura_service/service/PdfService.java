@@ -1,6 +1,8 @@
 package com.ryan.fatura_service.service;
 
 import com.ryan.fatura_service.enums.TipoTransacao;
+import com.ryan.fatura_service.exceptions.GeracaoPdfException;
+import com.ryan.fatura_service.exceptions.TransacaoNaoEncontradaException;
 import com.ryan.fatura_service.model.Fatura;
 import com.ryan.fatura_service.repository.FaturaRepository;
 import org.springframework.stereotype.Service;
@@ -23,13 +25,13 @@ public class PdfService {
         this.templateEngine = templateEngine;
     }
 
-    public byte[] gerarDocumentoPdf(String contaId, TipoTransacao tipoTransacao) throws Exception {
+    public byte[] gerarDocumentoPdf(String contaId, TipoTransacao tipoTransacao){
 
 
         List<Fatura> transacoes = faturaRepository.findByContaIdAndTipoTransacao(contaId, tipoTransacao);
 
         if (transacoes.isEmpty()) {
-            throw new RuntimeException("Nenhuma transação encontrada para gerar o documento.");
+            throw new TransacaoNaoEncontradaException("Nenhuma transação encontrada para gerar o documento.");
         }
 
 
@@ -51,12 +53,16 @@ public class PdfService {
 
         String html = templateEngine.process(nomeDoTemplate, context);
 
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        ITextRenderer renderer = new ITextRenderer();
-        renderer.setDocumentFromString(html);
-        renderer.layout();
-        renderer.createPDF(outputStream);
+        try {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            ITextRenderer renderer = new ITextRenderer();
+            renderer.setDocumentFromString(html);
+            renderer.layout();
+            renderer.createPDF(outputStream);
 
-        return outputStream.toByteArray();
+            return outputStream.toByteArray();
+        } catch (Exception e) {
+            throw new GeracaoPdfException("Falha interna ao gerar o arquivo PDF: " + e.getMessage());
+        }
     }
 }
