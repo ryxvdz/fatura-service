@@ -2,40 +2,131 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
-    <title>Documento</title>
+    <title>Extrato da Conta</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 40px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background-color: #f2f2f2; }
+        /* CSS Clássico focado em compatibilidade com o gerador de PDF */
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f3f4f6;
+            margin: 0;
+            padding: 0;
+            color: #1f2937;
+        }
+
+        /* O Cabeçalho com a cor Indigo/Roxa da sua marca */
+        .header {
+            background-color: #4c1d95;
+            color: #ffffff;
+            padding: 30px 40px;
+        }
+
+        .header h1 {
+            margin: 0 0 10px 0;
+            font-size: 26px;
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            margin: 4px 0;
+            color: #d8b4fe; /* Roxo clarinho para dar contraste */
+            font-size: 14px;
+        }
+
+        /* Container principal com fundo branco simulando uma "folha" */
+        .container {
+            background-color: #ffffff;
+            margin: 30px 40px;
+            padding: 30px;
+            border-radius: 8px;
+            /* Box shadow não funciona no PDF, então usamos uma borda sutil no topo */
+            border-top: 4px solid #1e3a8a;
+        }
+
+        .total-box {
+            text-align: right;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .total-box span.label {
+            font-size: 14px;
+            color: #6b7280;
+            text-transform: uppercase;
+            display: block;
+        }
+
+        .total-box span.value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #111827;
+        }
+
+        /* Estilo limpo para a tabela (sem bordas verticais pesadas) */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            padding: 12px 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f9fafb;
+            color: #4b5563;
+            font-size: 12px;
+            text-transform: uppercase;
+            border-bottom: 2px solid #d1d5db;
+        }
+
+        td {
+            font-size: 14px;
+            border-bottom: 1px solid #f3f4f6; /* Linha sutil separando as transações */
+            color: #111827;
+        }
+
+        .date-col { width: 30%; color: #6b7280; font-size: 13px; }
+        .merchant-col { width: 45%; font-weight: bold; }
+        .amount-col { width: 25%; text-align: right; font-weight: bold; color: #ef4444; } /* Vermelho para débito */
+
     </style>
 </head>
 <body>
-<h2>Resumo da Conta</h2>
-<p><strong>Nome:</strong> <span th:text="${cliente.contaNome}"></span></p>
-<p><strong>Cartão:</strong> <span th:text="${cliente.contaCartao}"></span></p>
 
-<table>
-    <thead>
-    <tr>
-        <th>Data e Hora</th>
-        <th>Comerciante</th>
-        <th>Valor (R$)</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="tx : ${transacoes}">
-        <td th:text="${#temporals.format(tx.dataHota, 'dd/MM/yyyy HH:mm')}"></td>
+<div class="header">
+    <h1>Extrato da Conta</h1>
+    <p><strong>Nome:</strong> <span th:text="${cliente.contaNome}"></span></p>
+    <p><strong>Cartão final:</strong> <span th:text="${cliente.contaCartao}"></span></p>
+</div>
 
-        <td th:text="${tx.comerciante}"></td>
+<div class="container">
 
-        <td th:text="${#numbers.formatDecimal(tx.valor, 1, 'POINT', 2, 'COMMA')}"></td>
-    </tr>
-    </tbody>
-</table>
+    <div class="total-box">
+        <span class="label">Total de Saídas</span>
+        <span class="value" th:text="'R$ ' + ${#numbers.formatDecimal(total, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</span>
+    </div>
 
-<h3 style="text-align: right;">
-    Total: R$ <span th:text="${#numbers.formatDecimal(total, 1, 'POINT', 2, 'COMMA')}"></span>
-</h3>
+    <table>
+        <thead>
+        <tr>
+            <th class="date-col">Data e Hora</th>
+            <th class="merchant-col">Comerciante</th>
+            <th style="text-align: right;">Valor</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="tx : ${transacoes}">
+            <td class="date-col" th:text="${#temporals.format(tx.dataHota, 'dd/MM/yyyy HH:mm')}"></td>
+            <td class="merchant-col" th:text="${tx.comerciante}"></td>
+            <td class="amount-col" th:text="'- R$ ' + ${#numbers.formatDecimal(tx.valor, 1, 'POINT', 2, 'COMMA')}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+
 </body>
 </html>

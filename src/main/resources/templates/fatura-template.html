@@ -2,40 +2,139 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
-    <title>Documento</title>
+    <title>Fatura do Cartão</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 40px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background-color: #f2f2f2; }
+        /* CSS Clássico e compatível com o Flying Saucer (Gerador de PDF) */
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f3f4f6;
+            margin: 0;
+            padding: 0;
+            color: #1f2937;
+        }
+
+        /* O Cabeçalho com a cor Indigo/Roxa da sua marca */
+        .header {
+            background-color: #4c1d95;
+            color: #ffffff;
+            padding: 30px 40px;
+        }
+
+        .header h1 {
+            margin: 0 0 10px 0;
+            font-size: 26px;
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            margin: 4px 0;
+            color: #d8b4fe; /* Roxo clarinho para dar contraste */
+            font-size: 14px;
+        }
+
+        /* Container principal simulando a "folha" branca */
+        .container {
+            background-color: #ffffff;
+            margin: 30px 40px;
+            padding: 30px;
+            border-radius: 8px;
+            border-top: 4px solid #1e3a8a; /* Borda superior em azul escuro */
+        }
+
+        /* Destaque central para o valor da Fatura */
+        .resumo-fatura {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 25px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .resumo-fatura .label {
+            font-size: 14px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: block;
+        }
+
+        .resumo-fatura .value {
+            font-size: 34px;
+            font-weight: bold;
+            color: #111827;
+            margin-top: 8px;
+            display: block;
+        }
+
+        /* Estilo da tabela seguindo o padrão moderno do Extrato */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            padding: 12px 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f9fafb;
+            color: #4b5563;
+            font-size: 12px;
+            text-transform: uppercase;
+            border-bottom: 2px solid #d1d5db;
+        }
+
+        td {
+            font-size: 14px;
+            border-bottom: 1px solid #f3f4f6;
+            color: #111827;
+        }
+
+        /* Colunas dimensionadas para um alinhamento perfeito */
+        .date-col { width: 30%; color: #6b7280; font-size: 13px; }
+        .merchant-col { width: 45%; font-weight: bold; }
+        .amount-col { width: 25%; text-align: right; font-weight: bold; color: #10b981; } /* Verde para representar as compras/créditos aprovados */
+
     </style>
 </head>
 <body>
-<h2>Resumo da Conta</h2>
-<p><strong>Nome:</strong> <span th:text="${cliente.contaNome}"></span></p>
-<p><strong>Cartão:</strong> <span th:text="${cliente.contaCartao}"></span></p>
 
-<table>
-    <thead>
-    <tr>
-        <th>Data e Hora</th>
-        <th>Comerciante</th>
-        <th>Valor (R$)</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="tx : ${transacoes}">
-        <td th:text="${#temporals.format(tx.dataHota, 'dd/MM/yyyy HH:mm')}"></td>
+<div class="header">
+    <h1>Fatura do Cartão de Credito</h1>
+    <p><strong>Titular:</strong> <span th:text="${cliente.contaNome}"></span></p>
+    <p><strong>Cartão final:</strong> <span th:text="${cliente.contaCartao}"></span></p>
+</div>
 
-        <td th:text="${tx.comerciante}"></td>
+<div class="container">
 
-        <td th:text="${#numbers.formatDecimal(tx.valor, 1, 'POINT', 2, 'COMMA')}"></td>
-    </tr>
-    </tbody>
-</table>
+    <div class="resumo-fatura">
+        <span class="label">Total da Fatura</span>
+        <span class="value" th:text="'R$ ' + ${#numbers.formatDecimal(total, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</span>
+    </div>
 
-<h3 style="text-align: right;">
-    Total: R$ <span th:text="${#numbers.formatDecimal(total, 1, 'POINT', 2, 'COMMA')}"></span>
-</h3>
+    <h3 style="color: #4b5563; font-size: 16px; margin-bottom: 15px;">Lançamentos</h3>
+
+    <table>
+        <thead>
+        <tr>
+            <th class="date-col">Data e Hora</th>
+            <th class="merchant-col">Estabelecimento</th>
+            <th style="text-align: right;">Valor</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="tx : ${transacoes}">
+            <td class="date-col" th:text="${#temporals.format(tx.dataHota, 'dd/MM/yyyy HH:mm')}"></td>
+            <td class="merchant-col" th:text="${tx.comerciante}"></td>
+            <td class="amount-col" th:text="'R$ ' + ${#numbers.formatDecimal(tx.valor, 1, 'POINT', 2, 'COMMA')}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+
 </body>
 </html>

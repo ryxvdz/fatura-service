@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.ryan.fatura_service.service.PdfServiceTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-04-09T14:16:09.747Z" hostname="ryan-dias-MS-7A38" time="2.235">
+<testsuite name="com.ryan.fatura_service.service.PdfServiceTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-04-09T14:31:37.999Z" hostname="ryan-dias-MS-7A38" time="2.167">
   <properties/>
-  <testcase name="Deve gerar Fatura em PDF com sucesso quando transação for CREDITO" classname="com.ryan.fatura_service.service.PdfServiceTest" time="2.207"/>
+  <testcase name="Deve gerar Fatura em PDF com sucesso quando transação for CREDITO" classname="com.ryan.fatura_service.service.PdfServiceTest" time="2.14"/>
   <testcase name="Deve gerar Extrato em PDF com sucesso quando transação for DEBITO" classname="com.ryan.fatura_service.service.PdfServiceTest" time="0.007"/>
-  <testcase name="Deve lançar GeracaoPdfException quando o ITextRenderer falhar" classname="com.ryan.fatura_service.service.PdfServiceTest" time="0.004"/>
+  <testcase name="Deve lançar GeracaoPdfException quando o ITextRenderer falhar" classname="com.ryan.fatura_service.service.PdfServiceTest" time="0.005"/>
   <testcase name="Deve lançar TransacaoNaoEncontradaException quando não houver transações" classname="com.ryan.fatura_service.service.PdfServiceTest" time="0.003"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
